@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dampak Sosial Informatika</title>
+    <!-- Memuat Tailwind CSS CDN untuk styling yang modern dan responsif -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Menggunakan font Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* Gaya kustom: Palet Warna Modern (Indigo dan Cyan) */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8faff; /* Latar belakang sangat terang */
+        }
+        /* Kelas untuk transisi halus pada elemen interaktif */
+        .transition-all {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        /* Gaya untuk navigasi tetap di atas (sticky nav) */
+        .sticky-nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            /* Tambahkan sedikit bayangan saat di-scroll */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+        }
+        /* Mengatur padding untuk scroll target agar tidak tertutup navbar */
+        section {
+            padding-top: 5rem;
+            margin-top: -5rem;
+        }
+        /* Gaya untuk card dampak positif/negatif */
+        .impact-card {
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+        }
+    </style>
+</head>
+<body class="text-gray-900">
+
+    <!-- Konfigurasi dan Otentikasi Firebase -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Variabel global yang disediakan oleh lingkungan
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
+        const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+
+        let app, db, auth;
+        
+        if (Object.keys(firebaseConfig).length > 0) {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                auth = getAuth(app);
+                setLogLevel('error');
+
+                if (initialAuthToken) {
+                    signInWithCustomToken(auth, initialAuthToken)
+                        .catch((error) => {
+                            console.error("Firebase Auth Error (Custom Token):", error.message);
+                            signInAnonymously(auth);
+                        });
+                } else {
+                    signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Firebase Initialization Error:", error.message);
+            }
+        }
+    </script>
+    <!-- Akhir Konfigurasi Firebase -->
+
+    <!-- Navbar/Header Sticky -->
+    <nav class="sticky-nav bg-indigo-700 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center px-4 sm:px-6 lg:px-8">
+            <h1 class="text-2xl font-extrabold tracking-tight">INFOSOCIAL</h1>
+            <div class="space-x-4 flex">
+                <a href="#materi" class="text-white hover:text-cyan-300 transition-all font-medium hidden sm:inline-block">Materi</a>
+                <a href="#contoh" class="text-white hover:text-cyan-300 transition-all font-medium hidden sm:inline-block">Studi Kasus</a>
+                <a href="#tabel" class="text-white hover:text-cyan-300 transition-all font-medium hidden sm:inline-block">Komparasi</a>
+                <a href="#kuis" class="bg-cyan-400 text-indigo-900 px-3 py-1 rounded-full hover:bg-cyan-300 transition-all text-sm font-bold shadow-lg">Kuis Cepat</a>
+            </div>
+            <!-- Menu mobile sederhana -->
+            <button class="sm:hidden text-white hover:text-cyan-300">
+                 <!-- Icon Menu (Lucide: Menu) -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-menu"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+        </div>
+    </nav>
+
+    <main class="container mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- 1. Halaman Utama / Hero Section (Lebih Dinamis) -->
+        <header id="beranda" class="text-center py-16 sm:py-24 bg-gradient-to-r from-indigo-500 to-cyan-400 rounded-3xl shadow-2xl mb-12 transform hover:scale-[1.005] transition-all">
+            <h1 class="text-5xl sm:text-7xl font-extrabold text-white mb-4 tracking-tight">Dampak Sosial Informatika</h1>
+            <p class="text-xl sm:text-2xl text-indigo-100 max-w-4xl mx-auto font-light">Menganalisis Dua Sisi Mata Uang: Inovasi yang Mengubah Masyarakat.</p>
+             <!-- Icon Komputer (Lucide: Laptop) -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mt-6 text-white opacity-75" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2" ry="2"/><line x1="2" x2="22" y1="14" y2="14"/></svg>
+        </header>
+
+        <!-- 2. Penjelasan Materi -->
+        <section id="materi" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">Inovasi dan Tantangan: Dua Kutub Informatika</h2>
+
+            <div class="grid lg:grid-cols-2 gap-8">
+                <!-- Dampak Positif (Card Hijau/Cyan) -->
+                <div class="impact-card bg-white p-8 border-t-4 border-cyan-400 hover:shadow-xl transition-all">
+                    <div class="flex items-center mb-4 space-x-3">
+                         <!-- Icon Positif (Lucide: Zap) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-cyan-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                        <h3 class="text-2xl font-bold text-cyan-600">Dampak Positif</h3>
+                    </div>
+                    <p class="mb-4 text-gray-700">Perkembangan informatika adalah akselerator peradaban. Dampak positifnya mendorong pertumbuhan ekonomi, transparansi, dan inklusi sosial.</p>
+                    <ul class="list-none space-y-3 text-gray-700">
+                        <li class="flex items-start"><span class="text-cyan-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Globalisasi Informasi:</strong> Pengetahuan tersedia secara instan untuk semua.</li>
+                        <li class="flex items-start"><span class="text-cyan-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Efisiensi Pelayanan:</strong> Transformasi digital di layanan publik dan bisnis.</li>
+                        <li class="flex items-start"><span class="text-cyan-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Demokratisasi Suara:</strong> Platform untuk menyuarakan opini dan mengorganisir gerakan sosial.</li>
+                    </ul>
+                </div>
+
+                <!-- Dampak Negatif (Card Merah/Indigo) -->
+                <div class="impact-card bg-white p-8 border-t-4 border-red-500 hover:shadow-xl transition-all">
+                    <div class="flex items-center mb-4 space-x-3">
+                         <!-- Icon Negatif (Lucide: Shield Off) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-red-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m2 2 20 20"/></svg>
+                        <h3 class="text-2xl font-bold text-red-600">Dampak Negatif</h3>
+                    </div>
+                    <p class="mb-4 text-gray-700">Setiap inovasi memiliki risiko. Dampak negatif seringkali mengancam privasi, stabilitas sosial, dan memicu isu kesehatan mental.</p>
+                    <ul class="list-none space-y-3 text-gray-700">
+                        <li class="flex items-start"><span class="text-red-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Ancaman Privasi Digital:</strong> Pengumpulan dan penyalahgunaan data pribadi.</li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Echo Chamber & Hoaks:</strong> Pembentukan gelembung informasi dan penyebaran kebohongan.</li>
+                        <li class="flex items-start"><span class="text-red-500 mr-2 font-bold text-xl">&bull;</span> <strong class="text-indigo-600">Kesenjangan Digital (Digital Divide):</strong> Ketidakmerataan akses yang memperburuk ketidaksetaraan.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. Contoh Nyata (Studi Kasus) -->
+        <section id="contoh" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">Studi Kasus: Teknologi dalam Genggaman</h2>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                
+                <!-- Contoh 1: Media Sosial -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-100 hover:border-cyan-400 transition-all">
+                    <div class="flex items-center space-x-3 text-indigo-600 mb-3">
+                        <!-- Icon Sosial Media (Lucide: Users) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                        <h4 class="text-xl font-bold">Media Sosial</h4>
+                    </div>
+                    <p class="text-gray-700 mb-3 text-sm">Alat koneksi yang juga menjadi sumber perbandingan sosial dan *FOMO*.</p>
+                    <span class="text-xs font-semibold text-cyan-600 bg-cyan-100 px-2 py-0.5 rounded-full">Konektivitas vs. Kesehatan Mental</span>
+                </div>
+
+                <!-- Contoh 2: E-commerce -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-100 hover:border-cyan-400 transition-all">
+                    <div class="flex items-center space-x-3 text-indigo-600 mb-3">
+                         <!-- Icon E-commerce (Lucide: Shopping Cart) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.72a2 2 0 0 0 2-1.58L23.95 4.05h-3.9"/></svg>
+                        <h4 class="text-xl font-bold">E-commerce</h4>
+                    </div>
+                    <p class="text-gray-700 mb-3 text-sm">Mempermudah transaksi, namun juga mendisrupsi bisnis ritel tradisional.</p>
+                    <span class="text-xs font-semibold text-cyan-600 bg-cyan-100 px-2 py-0.5 rounded-full">Efisiensi Bisnis vs. Disrupsi Pasar</span>
+                </div>
+
+                <!-- Contoh 3: AI/Kecerdasan Buatan -->
+                <div class="bg-white p-6 rounded-xl shadow-lg border-2 border-indigo-100 hover:border-cyan-400 transition-all">
+                    <div class="flex items-center space-x-3 text-indigo-600 mb-3">
+                         <!-- Icon AI (Lucide: Bot) -->
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8V4"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h20"/><path d="M15 18h-6"/><path d="M12 4v.01"/></svg>
+                        <h4 class="text-xl font-bold">Kecerdasan Buatan (AI)</h4>
+                    </div>
+                    <p class="text-gray-700 mb-3 text-sm">Menyediakan otomatisasi canggih, namun membawa dilema etika dan risiko pengangguran.</p>
+                    <span class="text-xs font-semibold text-cyan-600 bg-cyan-100 px-2 py-0.5 rounded-full">Otomatisasi vs. Etika & Pekerjaan</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. Tabel Perbandingan (Desain Lebih Rapi) -->
+        <section id="tabel" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">Komparasi Dampak Kunci</h2>
+
+            <div class="overflow-x-auto bg-white rounded-xl shadow-2xl">
+                <table class="min-w-full divide-y divide-indigo-200">
+                    <thead class="bg-indigo-600 text-white">
+                        <tr>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider w-1/4 rounded-tl-xl">Aspek</th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider w-3/8">Sisi Positif (Inovasi)</th>
+                            <th scope="col" class="px-6 py-4 text-left text-sm font-bold uppercase tracking-wider w-3/8 rounded-tr-xl">Sisi Negatif (Tantangan)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-indigo-100">
+                        <tr class="hover:bg-indigo-50 transition-all">
+                            <td class="px-6 py-4 whitespace-nowrap font-semibold text-indigo-800">Edukasi</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">Pembelajaran jarak jauh, akses materi kuliah global.</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">Potensi plagiarisme, hilangnya keterampilan riset manual.</td>
+                        </tr>
+                        <tr class="hover:bg-indigo-50 transition-all">
+                            <td class="px-6 py-4 whitespace-nowrap font-semibold text-indigo-800">Interaksi Sosial</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">Menjaga hubungan antar keluarga/teman di lokasi berbeda.</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">Ketergantungan virtual, penurunan empati tatap muka.</td>
+                        </tr>
+                        <tr class="hover:bg-indigo-50 transition-all">
+                            <td class="px-6 py-4 whitespace-nowrap font-semibold text-indigo-800">Politik/Pemerintahan</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">E-Government, transparansi anggaran, partisipasi publik.</td>
+                            <td class="px-6 py-4 text-sm text-gray-700">Manipulasi opini publik, pengawasan digital (surveillance).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- 5. Kuis Interaktif Sederhana (Widget Menarik) -->
+        <section id="kuis" class="mb-12">
+            <h2 class="text-4xl font-extrabold text-indigo-700 mb-8 text-center">Uji Pemahaman Anda!</h2>
+
+            <div id="quiz-container" class="bg-indigo-900 p-8 rounded-3xl shadow-2xl max-w-lg mx-auto border-4 border-cyan-400">
+                <div id="quiz-content">
+                    <p class="text-lg font-semibold mb-4 text-center text-white">Seberapa jauh Anda memahami Dampak Sosial Informatika?</p>
+                    
+                    <!-- Pertanyaan akan di-inject di sini oleh JavaScript -->
+                    <div id="question-area" class="space-y-4">
+                        <p class="text-center text-indigo-300">Memuat pertanyaan...</p>
+                    </div>
+
+                    <button id="submit-quiz" class="mt-6 w-full bg-cyan-400 text-indigo-900 font-bold py-3 px-4 rounded-full hover:bg-cyan-300 transition-all shadow-xl disabled:bg-gray-400 disabled:shadow-none transform hover:scale-[1.01]">
+                        Kirim Jawaban & Lihat Hasil
+                    </button>
+                </div>
+
+                <!-- Area Hasil Kuis -->
+                <div id="quiz-result" class="mt-6 text-center hidden">
+                    <h3 class="text-3xl font-bold text-cyan-400 mb-3">Hasil Kuis Anda</h3>
+                    <p id="score-text" class="text-5xl font-extrabold text-white mb-4"></p>
+                    <p id="feedback-text" class="text-lg text-indigo-200 mb-6"></p>
+                    <button id="reset-quiz" class="bg-indigo-600 text-white font-bold py-2 px-4 rounded-full hover:bg-indigo-500 transition-all shadow-md">
+                        Ulangi Kuis
+                    </button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 7. Footer (Dark, Kontras) -->
+    <footer class="bg-indigo-900 text-white p-6 mt-16">
+        <div class="container mx-auto text-center text-sm">
+            <!-- TAHUN TELAH DIPERBARUI KE 2025 -->
+            <p>&copy; 2025 Website Edukatif - Dibuat oleh Gemini, Model Bahasa Besar Google.</p>
+            <p class="mt-1 text-indigo-300">Tema: Dampak Sosial Informatika | Desain Modern</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript untuk Kuis Interaktif -->
+    <script>
+        const questions = [
+            {
+                question: "Manakah yang merupakan dampak positif utama dari perkembangan e-commerce terhadap masyarakat?",
+                options: [
+                    "Penyebaran berita palsu (hoaks) yang masif.",
+                    "Akses belanja 24/7 dan peluang pasar global bagi UMKM.",
+                    "Peningkatan jumlah cybercrime.",
+                    "Meningkatnya ketergantungan pada gawai."
+                ],
+                answer: "Akses belanja 24/7 dan peluang pasar global bagi UMKM."
+            },
+            {
+                question: "Apa risiko sosial paling signifikan yang ditimbulkan oleh penggunaan media sosial?",
+                options: [
+                    "Mempercepat komunikasi antarnegara.",
+                    "Memudahkan proses pembelajaran jarak jauh.",
+                    "Munculnya cyberbullying dan isolasi sosial.",
+                    "Penurunan biaya transaksi perbankan."
+                ],
+                answer: "Munculnya cyberbullying dan isolasi sosial."
+            },
+            {
+                question: "Kesenjangan digital (*digital divide*) paling tepat merujuk pada...",
+                options: [
+                    "Perbedaan antara perangkat keras dan perangkat lunak.",
+                    "Kesenjangan pendapatan akibat inflasi.",
+                    "Perbedaan akses terhadap teknologi informasi antara kelompok masyarakat.",
+                    "Banyaknya pilihan platform e-commerce."
+                ],
+                answer: "Perbedaan akses terhadap teknologi informasi antara kelompok masyarakat."
+            },
+            {
+                question: "Apa dampak negatif AI yang paling banyak dikhawatirkan di sektor ketenagakerjaan?",
+                options: [
+                    "AI terlalu lambat dalam memproses data.",
+                    "Potensi hilangnya pekerjaan akibat otomatisasi.",
+                    "AI tidak dapat bekerja secara mandiri.",
+                    "Biaya penggunaan AI yang terlalu murah."
+                ],
+                answer: "Potensi hilangnya pekerjaan akibat otomatisasi."
+            }
+        ];
+
+        const questionArea = document.getElementById('question-area');
+        const quizContent = document.getElementById('quiz-content');
+        const submitButton = document.getElementById('submit-quiz');
+        const resultArea = document.getElementById('quiz-result');
+        const scoreText = document.getElementById('score-text');
+        const feedbackText = document.getElementById('feedback-text');
+        const resetButton = document.getElementById('reset-quiz');
+
+        let selectedAnswers = Array(questions.length).fill(null);
+
+        // Fungsi untuk me-render semua pertanyaan sekaligus
+        function renderQuiz() {
+            questionArea.innerHTML = '';
+            questions.forEach((q, index) => {
+                const questionElement = document.createElement('div');
+                // Styling kartu pertanyaan yang kontras
+                questionElement.className = 'p-4 bg-indigo-800 rounded-xl shadow-lg border border-cyan-500 mb-4 transition-all hover:border-cyan-300';
+                
+                // Judul Pertanyaan
+                const title = document.createElement('p');
+                title.className = 'font-bold mb-3 text-cyan-400';
+                title.textContent = `Soal ${index + 1}: ${q.question}`;
+                questionElement.appendChild(title);
+
+                // Area Opsi
+                const optionsContainer = document.createElement('div');
+                optionsContainer.className = 'space-y-2';
+
+                q.options.forEach(option => {
+                    const label = document.createElement('label');
+                    label.className = 'flex items-center space-x-2 cursor-pointer p-2 rounded-lg text-indigo-100 hover:bg-indigo-700 transition-all';
+
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question${index}`;
+                    input.value = option;
+                    // Styling radio button yang sesuai tema
+                    input.className = 'form-radio h-4 w-4 text-cyan-400 border-indigo-500 focus:ring-cyan-400';
+
+                    input.addEventListener('change', () => {
+                        selectedAnswers[index] = option;
+                        checkAllAnswered();
+                    });
+
+                    const span = document.createElement('span');
+                    span.className = 'text-sm';
+                    span.textContent = option;
+
+                    label.appendChild(input);
+                    label.appendChild(span);
+                    optionsContainer.appendChild(label);
+                });
+
+                questionElement.appendChild(optionsContainer);
+                questionArea.appendChild(questionElement);
+            });
+            checkAllAnswered();
+        }
+
+        // Fungsi untuk memeriksa apakah semua pertanyaan sudah dijawab
+        function checkAllAnswered() {
+            const allAnswered = selectedAnswers.every(answer => answer !== null);
+            submitButton.disabled = !allAnswered;
+        }
+
+        // Fungsi untuk menghitung dan menampilkan hasil kuis
+        function submitQuiz() {
+            let score = 0;
+            questions.forEach((q, index) => {
+                if (selectedAnswers[index] === q.answer) {
+                    score++;
+                }
+            });
+
+            const total = questions.length;
+            const percentage = (score / total) * 100;
+            let feedback = '';
+
+            if (percentage === 100) {
+                feedback = "Sempurna! Anda adalah ahli dalam Dampak Sosial Informatika. Pemahaman Anda 100% akurat.";
+            } else if (percentage >= 75) {
+                feedback = "Luar biasa! Pemahaman yang sangat baik. Coba tinjau kembali satu atau dua poin untuk nilai sempurna.";
+            } else if (percentage >= 50) {
+                feedback = "Cukup baik. Ada beberapa area yang perlu diperkuat. Silakan ulangi bagian materi utama.";
+            } else {
+                feedback = "Terus mencoba! Disarankan membaca kembali seluruh materi dengan fokus pada perbedaan dampak positif dan negatif.";
+            }
+
+            scoreText.textContent = `${score} / ${total}`;
+            feedbackText.textContent = feedback;
+
+            // Tampilkan hasil dan sembunyikan kuis
+            quizContent.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+        }
+
+        // Fungsi untuk mereset kuis
+        function resetQuiz() {
+            selectedAnswers = Array(questions.length).fill(null);
+            renderQuiz();
+
+            // Tampilkan kuis dan sembunyikan hasil
+            quizContent.classList.remove('hidden');
+            resultArea.classList.add('hidden');
+        }
+
+        // Event Listeners
+        submitButton.addEventListener('click', submitQuiz);
+        resetButton.addEventListener('click', resetQuiz);
+
+        // Inisialisasi Kuis saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', renderQuiz);
+    </script>
+
+</body>
+</html>
+
